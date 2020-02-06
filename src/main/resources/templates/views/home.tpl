@@ -1,4 +1,4 @@
-layout 'views/layout.tpl',
+layout 'layout.tpl',
     pageTitle: 'Home',
     pageContent: contents {
         div(class: 'input-group mb-3') {
@@ -9,12 +9,12 @@ layout 'views/layout.tpl',
             }
 
         }
+
         ul(class: 'list-group list-group-flush') {
-            li(class: 'list-group-item') {
-                a(href:"/news/1", "News #1")
-            }
-            li(class: 'list-group-item') {
-                a(href:"/news/2", "News #2")
+            contentItems.each { contentItem ->
+                li(class: 'list-group-item') {
+                    a(href:"/content-item/$contentItem.id", "$contentItem.title")
+                }
             }
          }
     }
