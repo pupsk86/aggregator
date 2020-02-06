@@ -1,9 +1,6 @@
 package com.gridasovka.aggregator.dao.contentitem;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ContentItem {
@@ -13,6 +10,8 @@ public class ContentItem {
     private Long id;
 
     private String title;
+
+    @Lob
     private String body;
 
     protected ContentItem() {}

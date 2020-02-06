@@ -1,8 +1,7 @@
 package com.gridasovka.aggregator.dao.contentitem;
 
-import com.gridasovka.aggregator.dao.contentitem.ContentItem;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ContentItemRepository extends CrudRepository<ContentItem, Long> {
+public interface ContentItemRepository extends PagingAndSortingRepository<ContentItem, Long> {
 
 }

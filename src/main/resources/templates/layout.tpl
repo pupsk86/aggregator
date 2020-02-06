@@ -10,15 +10,15 @@ html {
     body {
         nav(class: 'navbar navbar-expand-lg navbar-light bg-light sticky-top') {
             a(class: 'navbar-brand', href: '/', 'Aggregator')
-            button(class: 'navbar-toggler', type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarSupportedContent', 'aria-controls': 'navbarSupportedContent', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation') {
+            button(class: 'navbar-toggler', type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarSupportedContent') {
                 span(class: 'navbar-toggler-icon')
             }
             div(class: 'collapse navbar-collapse', id: 'navbarSupportedContent') {
                 ul(class: 'navbar-nav mr-auto') {
-                    li(class: 'nav-item active') {
+                    li(class: 'nav-item' + (section == 'Home' ? ' active' : '')) {
                         a(class: 'nav-link', href: '/', 'Home')
                     }
-                    li(class: 'nav-item') {
+                    li(class: 'nav-item' + (section == 'Subscriptions' ? ' active' : '')) {
                         a(class: 'nav-link', href: '/subscriptions', 'Subscriptions')
                     }
                 }
