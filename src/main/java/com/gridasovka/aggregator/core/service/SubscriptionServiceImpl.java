@@ -1,6 +1,7 @@
 package com.gridasovka.aggregator.core.service;
 
 import com.gridasovka.aggregator.core.provider.ContentProvider;
+import com.gridasovka.aggregator.dao.contentitem.ContentItemRepository;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
 import com.gridasovka.aggregator.dao.subscription.SubscriptionRepository;
 import org.slf4j.Logger;
@@ -8,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -21,6 +22,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private ContentItemRepository contentItemRepository;
+
+    @Autowired
+    private AsyncContentProviderService asyncIndexService;
+
+    private Map<Long, CompletableFuture> reIndexTasks = new HashMap<>();
 
     @Override
     public Iterable<Subscription> findAll() {
@@ -47,5 +56,25 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public void reIndexSubscription(Subscription subscription) {
         logger.info("providers=" + providers);
+        ContentProvider provider = getProviderForSubscription(subscription);
+
+        synchronized (reIndexTasks) {
+            CompletableFuture completableFuture = reIndexTasks.get(subscription.getId());
+            logger.info("completableFuture=" + completableFuture);
+            if (completableFuture != null) {
+                completableFuture.cancel(true);
+            }
+            CompletableFuture completableFuture1 = asyncIndexService.getContent(provider).handleAsync((contentItems, throwable) -> {
+                if (throwable != null) {
+                    logger.error("reIndexSubscription error: ", throwable);
+                }
+                return CompletableFuture.completedFuture(contentItemRepository.saveAll(contentItems));
+            });
+            reIndexTasks.put(subscription.getId(), completableFuture1);
+        }
+    }
+
+    private ContentProvider getProviderForSubscription(Subscription subscription) {
+        return providers.stream().filter(p -> p.getClass().getCanonicalName().equals("com.gridasovka.aggregator.core.provider.StubContentProvider")).findFirst().get();
     }
 }
