@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Subscription {
@@ -12,8 +14,12 @@ public class Subscription {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    @NotNull
+    @NotBlank
     private String title;
 
+    @NotNull
+    @NotBlank
     private String url;
 
     protected Subscription() {}
@@ -23,8 +29,16 @@ public class Subscription {
         this.url = url;
     }
 
+    public boolean isNew() {
+        return this.id == null;
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

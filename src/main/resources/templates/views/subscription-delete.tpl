@@ -17,7 +17,6 @@ layout 'layout.tpl',
         h2('Delete Subscription')
         p('Are you sure you want to delete the selected subscription?')
         form(method: 'POST', action: spring.requestUri) {
-            //TODO: Add csrf token
             button(type: 'submit', class: 'btn btn-danger', 'Delete')
         }
     }

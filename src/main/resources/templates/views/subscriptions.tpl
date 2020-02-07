@@ -27,12 +27,13 @@ layout 'layout.tpl',
                         td(subscription.url)
                         td {
                             div(class: 'btn-group', role: 'group') {
-                                a(href: "$spring.requestUri/edit/$subscription.id", class: 'btn btn-sm btn-outline-primary', 'Edit')
-                                a(href: "$spring.requestUri/delete/$subscription.id", class: 'btn btn-sm btn-outline-danger', 'Delete')
+                                a(href: "$spring.requestUri/$subscription.id/edit", class: 'btn btn-sm btn-outline-primary', 'Edit')
+                                a(href: "$spring.requestUri/$subscription.id/delete", class: 'btn btn-sm btn-outline-danger', 'Delete')
                             }
                         }
                     }
                 }
             }
         }
+        a(href: "$spring.requestUri/create", class: 'btn btn-success', 'Add new')
     }
