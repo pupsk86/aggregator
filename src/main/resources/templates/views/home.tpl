@@ -3,13 +3,13 @@ layout 'layout.tpl',
     section: 'Home',
     pageContent: contents {
         hr()
-        div(class: 'input-group mb-3') {
-            input(type: 'text', class: 'form-control')
-            div(class: 'input-group-append') {
-                button(class: 'btn btn-outline-secondary', type: 'button', 'Search')
-
+        form(method: 'POST', action: spring.requestUri) {
+            div(class: 'input-group mb-3') {
+                input(type: 'text', class: 'form-control', name: 'query', value: query)
+                div(class: 'input-group-append') {
+                    button(class: 'btn btn-outline-secondary', type: 'submit', 'Search')
+                }
             }
-
         }
         hr()
         contentItemsPage.content.each { contentItem ->

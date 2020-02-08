@@ -9,4 +9,6 @@ public interface ContentItemRepository extends PagingAndSortingRepository<Conten
     public Iterable<ContentItem> findAllBySubscriptionId(Long subscriptionId);
 
     public Page<ContentItem> findAllByOrderByIdDesc(Pageable pageable);
+
+    public Page<ContentItem> findByTitleContainingIgnoreCaseOrderByIdDesc(Pageable pageable, String title);
 }

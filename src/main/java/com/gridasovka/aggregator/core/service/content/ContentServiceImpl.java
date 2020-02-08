@@ -19,8 +19,13 @@ public class ContentServiceImpl implements ContentService {
     private ContentItemRepository contentItemRepository;
 
     @Override
-    public Page<ContentItem> findAllByOrderByIdDesc(Pageable pageable) {
+    public Page<ContentItem> getAll(Pageable pageable) {
         return contentItemRepository.findAllByOrderByIdDesc(pageable);
+    }
+
+    @Override
+    public Page<ContentItem> search(Pageable pageable, String query) {
+        return contentItemRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(pageable, query);
     }
 
     @Override

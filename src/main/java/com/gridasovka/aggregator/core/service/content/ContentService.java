@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface ContentService {
 
-    public Page<ContentItem> findAllByOrderByIdDesc(Pageable pageable);
+    public Page<ContentItem> getAll(Pageable pageable);
+
+    public Page<ContentItem> search(Pageable pageable, String query);
 
     public Iterable<ContentItem> updateContentForSubscription(Subscription subscription, Iterable<ContentItemDto> contentItems);
 }
