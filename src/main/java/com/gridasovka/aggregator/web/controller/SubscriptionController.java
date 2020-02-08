@@ -1,7 +1,7 @@
 package com.gridasovka.aggregator.web.controller;
 
 import com.gridasovka.aggregator.dao.subscription.Subscription;
-import com.gridasovka.aggregator.core.service.SubscriptionService;
+import com.gridasovka.aggregator.core.service.subscription.SubscriptionService;
 import com.gridasovka.aggregator.web.exception.SubscriptionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,7 +57,7 @@ public class SubscriptionController {
     public ModelAndView edit(@PathVariable("subscriptionId") Long subscriptionId) {
         Subscription subscription = subscriptionService
             .findById(subscriptionId)
-            .orElseThrow(() -> new SubscriptionNotFoundException());
+            .orElseThrow(SubscriptionNotFoundException::new);
         return new ModelAndView("views/subscription-create-or-edit", Map.of("subscription", subscription));
     }
 

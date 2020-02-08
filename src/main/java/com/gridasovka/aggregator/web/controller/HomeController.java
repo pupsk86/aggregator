@@ -1,7 +1,7 @@
 package com.gridasovka.aggregator.web.controller;
 
+import com.gridasovka.aggregator.core.service.content.ContentService;
 import com.gridasovka.aggregator.dao.contentitem.ContentItem;
-import com.gridasovka.aggregator.dao.contentitem.ContentItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +15,11 @@ import java.util.Map;
 public class HomeController {
 
     @Autowired
-    private ContentItemRepository contentItemRepository;
+    private ContentService contentService;
 
     @GetMapping("/")
     public ModelAndView index(Pageable pageable) {
-        Page<ContentItem> contentItemsPage = contentItemRepository.findAll(pageable);
+        Page<ContentItem> contentItemsPage = contentService.findAllByOrderByIdDesc(pageable);
         return new ModelAndView("views/home", Map.of("contentItemsPage", contentItemsPage));
     }
 }

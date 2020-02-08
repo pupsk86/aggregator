@@ -1,4 +1,4 @@
-package com.gridasovka.aggregator.core.service;
+package com.gridasovka.aggregator.core.service.subscription;
 
 import com.gridasovka.aggregator.dao.subscription.Subscription;
 
@@ -14,7 +14,7 @@ public interface SubscriptionService {
 
     public Optional<Subscription> findById(Long id);
 
-    public void scheduleSubscriptionsReIndexing();
+    public void scheduleReindexing();
 
-    public void scheduleSubscriptionReIndexing(Subscription subscription);
+    public void scheduleReindexing(Subscription subscription);
 }

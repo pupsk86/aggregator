@@ -2,8 +2,6 @@ package com.gridasovka.aggregator.core.provider;
 
 import com.gridasovka.aggregator.dao.contentitem.ContentItem;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class StubContentProvider implements ContentProvider {
-    Logger logger = LoggerFactory.getLogger(StubContentProvider.class);
 
     @Override
     public Iterable<ContentItem> getContent(Subscription subscription) {
@@ -20,7 +17,6 @@ public class StubContentProvider implements ContentProvider {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-        logger.info("StubContentProvider.getContent");
         return List.of(
                 new ContentItem(subscription,"guid1", "link1", "title1", "description1"),
                 new ContentItem(subscription,"guid2", "link2", "title2", "description2"),

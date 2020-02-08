@@ -1,6 +1,6 @@
 package com.gridasovka.aggregator.core.listener;
 
-import com.gridasovka.aggregator.core.service.SubscriptionService;
+import com.gridasovka.aggregator.core.service.subscription.SubscriptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ public class ApplicationReadyListener implements ApplicationListener<Application
     Logger logger = LoggerFactory.getLogger(ApplicationReadyListener.class);
 
     @Autowired
-    SubscriptionService subscriptionService;
+    private SubscriptionService subscriptionService;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        subscriptionService.scheduleSubscriptionsReIndexing();
+        subscriptionService.scheduleReindexing();
     }
 }
