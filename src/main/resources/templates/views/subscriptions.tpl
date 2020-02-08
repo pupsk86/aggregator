@@ -15,7 +15,6 @@ layout 'layout.tpl',
                 tr {
                     th(scope: 'col', '#')
                     th(scope: 'col', 'Title')
-                    th(scope: 'col', 'Url')
                     th(scope: 'col', 'Actions')
                 }
             }
@@ -24,7 +23,6 @@ layout 'layout.tpl',
                     tr {
                         th(scope: 'row', subscription.id)
                         td(subscription.title)
-                        td(subscription.url)
                         td {
                             div(class: 'btn-group', role: 'group') {
                                 a(href: "$spring.requestUri/$subscription.id/edit", class: 'btn btn-sm btn-outline-primary', 'Edit')

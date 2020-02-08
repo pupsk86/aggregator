@@ -20,13 +20,13 @@ public class Subscription {
 
     @NotNull
     @NotBlank
-    private String url;
+    private String contentProvider;
 
     protected Subscription() {}
 
-    public Subscription(String url, String title) {
+    public Subscription(String contentProvider, String title) {
+        this.contentProvider = contentProvider;
         this.title = title;
-        this.url = url;
     }
 
     public boolean isNew() {
@@ -45,7 +45,7 @@ public class Subscription {
         return title;
     }
 
-    public String getUrl() {
-        return url;
+    public String getContentProvider() {
+        return contentProvider;
     }
 }

@@ -4,5 +4,8 @@ import com.gridasovka.aggregator.dao.contentitem.ContentItem;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
 
 public interface ContentProvider {
+
+    public String getName();
+
     public Iterable<ContentItem> getContent(Subscription subscription);
 }

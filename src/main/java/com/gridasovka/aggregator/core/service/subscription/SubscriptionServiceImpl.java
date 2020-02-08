@@ -2,6 +2,7 @@ package com.gridasovka.aggregator.core.service.subscription;
 
 import com.gridasovka.aggregator.core.provider.ContentProvider;
 import com.gridasovka.aggregator.core.service.content.ContentService;
+import com.gridasovka.aggregator.core.service.provider.ProviderService;
 import com.gridasovka.aggregator.dao.contentitem.ContentItem;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
 import com.gridasovka.aggregator.dao.subscription.SubscriptionRepository;
@@ -21,13 +22,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
     @Autowired
-    private List<ContentProvider> providers;
-
-    @Autowired
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
     private ContentService contentService;
+
+    @Autowired
+    private ProviderService providerService;
 
     @Autowired
     private TaskScheduler taskScheduler;
@@ -41,7 +42,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void deleteById(Long id) {
-        cancelSubscriptionReindexing(id);
+        cancelReindexing(id);
         subscriptionRepository.deleteById(id);
     }
 
@@ -66,9 +67,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public void scheduleReindexing(Subscription subscription) {
         synchronized(scheduledReindexingTasks) {
-            cancelSubscriptionReindexing(subscription.getId());
+            cancelReindexing(subscription.getId());
 
-            ContentProvider provider = getProviderForSubscription(subscription).orElse(null);
+            ContentProvider provider = providerService.getProviderForSubscription(subscription).orElse(null);
             if (provider == null) {
                 //TODO: Write err to subscription info
                 logger.error("Suitable provider was not found for subscription");
@@ -94,7 +95,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
     }
 
-    private void cancelSubscriptionReindexing(Long subscriptionId) {
+    private void cancelReindexing(Long subscriptionId) {
         synchronized(scheduledReindexingTasks) {
             ScheduledFuture scheduledTask = scheduledReindexingTasks.get(subscriptionId);
             if (scheduledTask != null) {
@@ -102,9 +103,5 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 scheduledReindexingTasks.remove(subscriptionId);
             }
         }
-    }
-
-    private Optional<ContentProvider> getProviderForSubscription(Subscription subscription) {
-        return providers.stream().filter(p -> p.getClass().getCanonicalName().equals("com.gridasovka.aggregator.core.provider.StubContentProvider")).findFirst();
     }
 }

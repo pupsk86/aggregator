@@ -11,6 +11,11 @@ import java.util.concurrent.TimeUnit;
 public class StubContentProvider implements ContentProvider {
 
     @Override
+    public String getName() {
+        return "Stub Content Provider";
+    }
+
+    @Override
     public Iterable<ContentItem> getContent(Subscription subscription) {
         try {
             Thread.sleep(TimeUnit.SECONDS.toMillis(30));

@@ -22,9 +22,13 @@ layout 'layout.tpl',
                 div(class: 'invalid-feedback', "" + bindingResult?.getFieldError('title')?.getDefaultMessage())
             }
             div(class: 'form-group') {
-                label(for: 'url', 'Url')
-                input(type: 'text', class: 'form-control' + (bindingResult?.hasFieldErrors('url') ? ' is-invalid' : ''), id: 'url', name: 'url', value: subscription.url)
-                div(class: 'invalid-feedback', "" + bindingResult?.getFieldError('url')?.getDefaultMessage())
+                label(for: 'contentProvider' , 'Content provider')
+                select(class: 'form-control' + (bindingResult?.hasFieldErrors('contentProvider') ? ' is-invalid' : ''), id: 'contentProvider', name: 'contentProvider') {
+                    contentProviderOptions.each { contentProviderOption ->
+                        option(value: contentProviderOption.key, contentProviderOption.value)
+                    }
+                }
+                div(class: 'invalid-feedback', "" + bindingResult?.getFieldError('contentProvider')?.getDefaultMessage())
             }
             button(type: 'submit', class: 'btn btn-success', subscription.new ? 'Create' : 'Update')
         }
