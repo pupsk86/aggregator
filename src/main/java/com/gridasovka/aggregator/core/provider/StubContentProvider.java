@@ -1,6 +1,7 @@
 package com.gridasovka.aggregator.core.provider;
 
 import com.gridasovka.aggregator.dao.contentitem.ContentItem;
+import com.gridasovka.aggregator.dao.subscription.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ public class StubContentProvider implements ContentProvider {
     Logger logger = LoggerFactory.getLogger(StubContentProvider.class);
 
     @Override
-    public Iterable<ContentItem> getContent() {
+    public Iterable<ContentItem> getContent(Subscription subscription) {
         try {
             Thread.sleep(TimeUnit.SECONDS.toMillis(10));
         } catch (InterruptedException ex) {
@@ -21,13 +22,13 @@ public class StubContentProvider implements ContentProvider {
         }
         logger.info("StubContentProvider.getContent");
         return List.of(
-                new ContentItem("title1", "body1"),
-                new ContentItem("title2", "body2"),
-                new ContentItem("title3", "body3"),
-                new ContentItem("title4", "body4"),
-                new ContentItem("title5", "body5"),
-                new ContentItem("title6", "body6"),
-                new ContentItem("title7", "body7")
+                new ContentItem(subscription,"guid1", "link1", "title1", "description1"),
+                new ContentItem(subscription,"guid2", "link2", "title2", "description2"),
+                new ContentItem(subscription,"guid3", "link3", "title3", "description3"),
+                new ContentItem(subscription,"guid4", "link4", "title4", "description4"),
+                new ContentItem(subscription,"guid5", "link5", "title5", "description5"),
+                new ContentItem(subscription,"guid6", "link6", "title6", "description6"),
+                new ContentItem(subscription,"guid7", "link7", "title7", "description7")
         );
     }
 }

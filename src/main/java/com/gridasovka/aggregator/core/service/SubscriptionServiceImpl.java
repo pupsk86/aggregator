@@ -64,7 +64,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             if (completableFuture != null) {
                 completableFuture.cancel(true);
             }
-            CompletableFuture completableFuture1 = asyncIndexService.getContent(provider).handleAsync((contentItems, throwable) -> {
+            CompletableFuture completableFuture1 = asyncIndexService.getContent(subscription, provider).handleAsync((contentItems, throwable) -> {
                 if (throwable != null) {
                     logger.error("reIndexSubscription error: ", throwable);
                 }

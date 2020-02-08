@@ -12,13 +12,17 @@ layout 'layout.tpl',
 
         }
         hr()
-        ul(class: 'list-group list-group-flush') {
-            contentItemsPage.content.each { contentItem ->
-                li(class: 'list-group-item') {
-                    a(href: "/content-item/$contentItem.id", "$contentItem.title")
+        contentItemsPage.content.each { contentItem ->
+            div(class: 'card mb-3') {
+                div(class: 'card-body') {
+                    h5(class: 'card-title') {
+                        a(href: contentItem.link, contentItem.title)
+                    }
+                    h6(class: 'card-subtitle mb-2 text-muted', contentItem.subscription.title)
+                    p(class: 'card-text', contentItem.description)
                 }
             }
-         }
+        }
         hr()
         nav{
             ul(class: 'pagination justify-content-center') {
