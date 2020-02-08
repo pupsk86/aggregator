@@ -16,7 +16,7 @@ public class StubContentProvider implements ContentProvider {
     @Override
     public Iterable<ContentItem> getContent(Subscription subscription) {
         try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+            Thread.sleep(TimeUnit.SECONDS.toMillis(30));
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }

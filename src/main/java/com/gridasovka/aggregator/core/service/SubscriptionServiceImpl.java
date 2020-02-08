@@ -7,10 +7,12 @@ import com.gridasovka.aggregator.dao.subscription.SubscriptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -27,9 +29,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private ContentItemRepository contentItemRepository;
 
     @Autowired
-    private AsyncContentProviderService asyncIndexService;
+    private TaskScheduler taskScheduler;
 
-    private Map<Long, CompletableFuture> reIndexTasks = new HashMap<>();
+    final private Map<Long, ScheduledFuture> scheduledSubscriptionReIndexingTasks = new ConcurrentHashMap<>();
 
     @Override
     public Iterable<Subscription> findAll() {
@@ -43,9 +45,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription save(Subscription subscription) {
-        Subscription subscription1 = subscriptionRepository.save(subscription);
-        reIndexSubscription(subscription1);
-        return subscription1;
+        Subscription savedSubscription = subscriptionRepository.save(subscription);
+        scheduleSubscriptionReIndexing(savedSubscription);
+        return savedSubscription;
     }
 
     @Override
@@ -54,24 +56,39 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public void reIndexSubscription(Subscription subscription) {
-        logger.info("providers=" + providers);
-        ContentProvider provider = getProviderForSubscription(subscription);
+    public void scheduleSubscriptionsReIndexing() {
+        subscriptionRepository.findAll()
+            .forEach(subscription -> scheduleSubscriptionReIndexing(subscription));
+    }
 
-        synchronized (reIndexTasks) {
-            CompletableFuture completableFuture = reIndexTasks.get(subscription.getId());
-            logger.info("completableFuture=" + completableFuture);
-            if (completableFuture != null) {
-                completableFuture.cancel(true);
-            }
-            CompletableFuture completableFuture1 = asyncIndexService.getContent(subscription, provider).handleAsync((contentItems, throwable) -> {
-                if (throwable != null) {
-                    logger.error("reIndexSubscription error: ", throwable);
-                }
-                return CompletableFuture.completedFuture(contentItemRepository.saveAll(contentItems));
-            });
-            reIndexTasks.put(subscription.getId(), completableFuture1);
+    @Override
+    public synchronized void scheduleSubscriptionReIndexing(Subscription subscription) {
+        ScheduledFuture outdatedTask = scheduledSubscriptionReIndexingTasks.get(subscription.getId());
+        if (outdatedTask != null) {
+            outdatedTask.cancel(true);
+            scheduledSubscriptionReIndexingTasks.remove(subscription.getId());
         }
+
+        ContentProvider provider = getProviderForSubscription(subscription);
+        if (provider == null) {
+            //TODO: Write err to subscription info
+        }
+
+        ScheduledFuture scheduledFuture = taskScheduler.scheduleWithFixedDelay(
+                () -> {
+                    logger.info("GKA__sceduled task is running");
+                    try {
+                        contentItemRepository.saveAll(provider.getContent(subscription));
+                    } catch (Exception ex) {
+                        logger.error("GKA__sceduled task is failed", ex);
+                    }
+                    logger.info("GKA__sceduled task is done");
+                },
+                new Date(),
+                10 * 1000
+        );
+
+        scheduledSubscriptionReIndexingTasks.put(subscription.getId(), scheduledFuture);
     }
 
     private ContentProvider getProviderForSubscription(Subscription subscription) {

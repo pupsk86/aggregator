@@ -14,5 +14,7 @@ public interface SubscriptionService {
 
     public Optional<Subscription> findById(Long id);
 
-    public void reIndexSubscription(Subscription subscription);
+    public void scheduleSubscriptionsReIndexing();
+
+    public void scheduleSubscriptionReIndexing(Subscription subscription);
 }
