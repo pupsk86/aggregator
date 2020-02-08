@@ -1,5 +1,6 @@
 package com.gridasovka.aggregator.core.service.content;
 
+import com.gridasovka.aggregator.core.provider.dto.ContentItemDto;
 import com.gridasovka.aggregator.dao.contentitem.ContentItem;
 import com.gridasovka.aggregator.dao.contentitem.ContentItemRepository;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
@@ -23,7 +24,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public synchronized Iterable<ContentItem> updateContentForSubscription(Subscription subscription, Iterable<ContentItem> contentItems) {
+    public synchronized Iterable<ContentItem> updateContentForSubscription(Subscription subscription, Iterable<ContentItemDto> contentItems) {
         List<String> existedContentGuids = new ArrayList<>();
         contentItemRepository
                 .findAllBySubscriptionId(subscription.getId())
@@ -32,7 +33,13 @@ public class ContentServiceImpl implements ContentService {
         List<ContentItem> newContentItems = new ArrayList<>();
         contentItems.forEach(providedContentItem -> {
             if (!existedContentGuids.contains(providedContentItem.getGuid())) {
-                newContentItems.add(providedContentItem);
+                newContentItems.add(new ContentItem(
+                    subscription,
+                    providedContentItem.getGuid(),
+                    providedContentItem.getLink(),
+                    providedContentItem.getTitle(),
+                    providedContentItem.getDescription()
+                ));
             }
         });
 

@@ -1,5 +1,6 @@
 package com.gridasovka.aggregator.core.service.content;
 
+import com.gridasovka.aggregator.core.provider.dto.ContentItemDto;
 import com.gridasovka.aggregator.dao.contentitem.ContentItem;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
 import org.springframework.data.domain.Page;
@@ -9,5 +10,5 @@ public interface ContentService {
 
     public Page<ContentItem> findAllByOrderByIdDesc(Pageable pageable);
 
-    public Iterable<ContentItem> updateContentForSubscription(Subscription subscription, Iterable<ContentItem> contentItems);
+    public Iterable<ContentItem> updateContentForSubscription(Subscription subscription, Iterable<ContentItemDto> contentItems);
 }

@@ -11,11 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -23,8 +25,8 @@ import java.util.stream.Collectors;
 public class SubscriptionController {
 
     final private String VIEW_LIST = "views/subscriptions";
-    final private String VIEW_CREATE_OR_EDIT = "views/subscription-create-or-edit";
-    final private String VIEW_DELETE = "views/subscription-delete";
+    final private String VIEW_CREATE_OR_EDIT = "views/subscription_create_or_edit";
+    final private String VIEW_DELETE = "views/subscription_delete";
 
     @Autowired
     private SubscriptionService subscriptionService;
@@ -54,10 +56,8 @@ public class SubscriptionController {
 
     @GetMapping("/subscriptions/create")
     public ModelAndView create() {
-        Subscription subscription = new Subscription("", "");
         return new ModelAndView(VIEW_CREATE_OR_EDIT, Map.of(
-            "subscription", subscription,
-            "contentProviderOptions", getContentProviderOptions()
+            "subscription", new Subscription()
         ));
     }
 
@@ -66,12 +66,10 @@ public class SubscriptionController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView(VIEW_CREATE_OR_EDIT, Map.of(
                 "subscription", subscription,
-                "contentProviderOptions", getContentProviderOptions(),
                 "bindingResult", bindingResult
             ));
         }
         subscriptionService.save(subscription);
-
         return new ModelAndView("redirect:/subscriptions");
     }
 
@@ -81,8 +79,7 @@ public class SubscriptionController {
             .findById(subscriptionId)
             .orElseThrow(SubscriptionNotFoundException::new);
         return new ModelAndView(VIEW_CREATE_OR_EDIT, Map.of(
-            "subscription", subscription,
-            "contentProviderOptions", getContentProviderOptions()
+            "subscription", subscription
         ));
     }
 
@@ -91,7 +88,6 @@ public class SubscriptionController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView(VIEW_CREATE_OR_EDIT, Map.of(
                 "subscription", subscription,
-                "contentProviderOptions", getContentProviderOptions(),
                 "bindingResult", bindingResult
             ));
         }
@@ -100,8 +96,22 @@ public class SubscriptionController {
         return new ModelAndView("redirect:/subscriptions");
     }
 
-    private Map<String, String> getContentProviderOptions() {
+    @PostMapping("/ajax/subscriptions/content-provider-parameters")
+    public ModelAndView ajaxContentProviderParameters(Subscription subscription) {
+        return new ModelAndView("views/subscription_content_provider_parameters", Map.of(
+            "subscription", subscription
+        ));
+    }
+
+    @ModelAttribute("contentProvidersParametersDescription")
+    private Map<String, Map<String, String>> getContentProvidersParametersDescription() {
         return providerService.getProviders().stream()
-            .collect(Collectors.toMap(contentProvider -> contentProvider.getClass().getCanonicalName(), ContentProvider::getName));
+            .collect(Collectors.toMap(contentProvider -> contentProvider.getGuid(), ContentProvider::getParametersDescription));
+    }
+
+    @ModelAttribute("contentProviderGuidOptions")
+    private Map<String, String> getContentProviderGuidOptions() {
+        return providerService.getProviders().stream()
+            .collect(Collectors.toMap(contentProvider -> contentProvider.getGuid(), ContentProvider::getName));
     }
 }

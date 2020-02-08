@@ -1,9 +1,9 @@
 package com.gridasovka.aggregator.core.service.subscription;
 
 import com.gridasovka.aggregator.core.provider.ContentProvider;
+import com.gridasovka.aggregator.core.provider.dto.ContentItemDto;
 import com.gridasovka.aggregator.core.service.content.ContentService;
 import com.gridasovka.aggregator.core.service.provider.ProviderService;
-import com.gridasovka.aggregator.dao.contentitem.ContentItem;
 import com.gridasovka.aggregator.dao.subscription.Subscription;
 import com.gridasovka.aggregator.dao.subscription.SubscriptionRepository;
 import org.slf4j.Logger;
@@ -78,17 +78,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
             ScheduledFuture scheduledFuture = taskScheduler.scheduleWithFixedDelay(
                     () -> {
-                        logger.info("GKA__sceduled task is running");
+                        logger.info("GKA__scheduled task is running");
                         try {
-                            Iterable<ContentItem> providedContentItems = provider.getContent(subscription);
+                            Iterable<ContentItemDto> providedContentItems = provider.getContent(subscription.getContentProviderParameters());
                             contentService.updateContentForSubscription(subscription, providedContentItems);
                         } catch (Exception ex) {
-                            logger.error("GKA__sceduled task is failed", ex);
+                            logger.error("GKA__scheduled task is failed", ex);
                         }
-                        logger.info("GKA__sceduled task is done");
+                        logger.info("GKA__scheduled task is done");
                     },
                     new Date(),
-                    10 * 1000
+                    subscription.getReindexDelayInMillis()
             );
 
             scheduledReindexingTasks.put(subscription.getId(), scheduledFuture);

@@ -1,11 +1,9 @@
 package com.gridasovka.aggregator.dao.subscription;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 @Entity
 public class Subscription {
@@ -19,15 +17,16 @@ public class Subscription {
     private String title;
 
     @NotNull
+    private Long reindexDelayInMillis;
+
+    @NotNull
     @NotBlank
-    private String contentProvider;
+    private String contentProviderGuid;
 
-    protected Subscription() {}
+    @ElementCollection(fetch = FetchType.EAGER)
+    public Map<String, String> contentProviderParameters;
 
-    public Subscription(String contentProvider, String title) {
-        this.contentProvider = contentProvider;
-        this.title = title;
-    }
+    public Subscription() {}
 
     public boolean isNew() {
         return this.id == null;
@@ -45,7 +44,31 @@ public class Subscription {
         return title;
     }
 
-    public String getContentProvider() {
-        return contentProvider;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Long getReindexDelayInMillis() {
+        return reindexDelayInMillis;
+    }
+
+    public void setReindexDelayInMillis(Long reindexDelayInMillis) {
+        this.reindexDelayInMillis = reindexDelayInMillis;
+    }
+
+    public String getContentProviderGuid() {
+        return contentProviderGuid;
+    }
+
+    public void setContentProviderGuid(String contentProviderGuid) {
+        this.contentProviderGuid = contentProviderGuid;
+    }
+
+    public Map<String, String> getContentProviderParameters() {
+        return contentProviderParameters;
+    }
+
+    public void setContentProviderParameters(Map<String, String> contentProviderParameters) {
+        this.contentProviderParameters = contentProviderParameters;
     }
 }

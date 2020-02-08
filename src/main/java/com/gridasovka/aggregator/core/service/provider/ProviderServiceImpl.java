@@ -11,7 +11,6 @@ import java.util.Optional;
 @Service
 public class ProviderServiceImpl implements ProviderService {
 
-
     @Autowired
     private List<ContentProvider> providers;
 
@@ -23,6 +22,6 @@ public class ProviderServiceImpl implements ProviderService {
     @Override
     public Optional<ContentProvider> getProviderForSubscription(Subscription subscription) {
         return providers.stream()
-                .filter(p -> p.getClass().getCanonicalName().equals(subscription.getContentProvider())).findFirst();
+            .filter(p -> p.getGuid().equals(subscription.getContentProviderGuid())).findFirst();
     }
 }
