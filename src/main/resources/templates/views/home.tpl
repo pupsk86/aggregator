@@ -16,7 +16,7 @@ layout 'layout.tpl',
             div(class: 'card mb-3') {
                 div(class: 'card-body') {
                     h5(class: 'card-title') {
-                        a(href: contentItem.link, contentItem.title)
+                        a(href: contentItem.link, target: '_blank', contentItem.title)
                     }
                     h6(class: 'card-subtitle mb-2 text-muted', contentItem.subscription.title)
                     p(class: 'card-text', contentItem.description)

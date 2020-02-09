@@ -6,13 +6,9 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +18,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class RssContentProvider implements ContentProvider {
+public class RssContentProvider extends WebContentProvider {
 
     private final String PARAM_KEY_URL = "url";
+
+    protected int socketTimeout = 15000;
 
     @Override
     public String getName() {
@@ -39,23 +37,25 @@ public class RssContentProvider implements ContentProvider {
     }
 
     @Override
-    public List<ContentItemDto> getContent(Map<String, String> parameters) {
-        String url = parameters.get(PARAM_KEY_URL);
+    protected String getUrl(Map<String, String> parameters) {
+        return getParameterOrThrow(parameters, PARAM_KEY_URL);
+    }
 
-        Assert.hasText(url, "Mandatory parameter \"Url\" is missing");
-
-        try (CloseableHttpClient client = HttpClients.createMinimal()) {
-            HttpUriRequest request = new HttpGet(url);
-            try (CloseableHttpResponse response = client.execute(request);
-                InputStream stream = response.getEntity().getContent()) {
-                SyndFeed feed = new SyndFeedInput().build(new XmlReader(stream));
-                List<SyndEntry> feedEntries = feed.getEntries();
-                Collections.reverse(feedEntries);
-                return feedEntries.stream()
-                    .map(syndEntry -> new ContentItemDto(syndEntry.getUri(), syndEntry.getLink(), syndEntry.getTitle(), syndEntry.getDescription().getValue()))
-                    .collect(Collectors.toList());
-            }
-        } catch (IOException | FeedException ex) {
+    @Override
+    protected List<ContentItemDto> processResponse(HttpUriRequest request, HttpResponse response, InputStream content, Map<String, String> parameters) throws IOException {
+        try {
+            SyndFeed feed = new SyndFeedInput().build(new XmlReader(content));
+            List<SyndEntry> feedEntries = feed.getEntries();
+            Collections.reverse(feedEntries);
+            return feedEntries.stream()
+                .map(syndEntry -> new ContentItemDto(
+                        syndEntry.getUri(),
+                        syndEntry.getLink(),
+                        syndEntry.getTitle(),
+                        syndEntry.getDescription().getValue()
+                ))
+                .collect(Collectors.toList());
+        } catch (FeedException ex) {
             throw new RuntimeException(ex);
         }
     }
