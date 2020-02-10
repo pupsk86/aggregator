@@ -8,14 +8,14 @@ It was built with <a href="https://spring.io/guides/gs/spring-boot">Spring Boot<
 You can build a jar file:
 ````
 git clone https://github.com/pupsk86/aggregator.git
-cd spring-petclinic
+cd aggregator
 ./mvnw package
 java -jar target/*.jar
 ````
 Or you can run it from Maven directly:
  ````
  git clone https://github.com/pupsk86/aggregator.git
- cd spring-petclinic
+ cd aggregator
  ./mvnw spring-boot:run
  ````
 After running you can access the application here: http://localhost:8080/
