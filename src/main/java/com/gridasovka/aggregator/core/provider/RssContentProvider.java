@@ -22,8 +22,6 @@ public class RssContentProvider extends WebContentProvider {
 
     private final String PARAM_KEY_URL = "url";
 
-    protected int socketTimeout = 15000;
-
     @Override
     public String getName() {
         return "RSS reader";

@@ -78,14 +78,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
             ScheduledFuture scheduledFuture = taskScheduler.scheduleWithFixedDelay(
                     () -> {
-                        logger.info("GKA__scheduled task is running");
+                        logger.info("Scheduled task is running");
                         try {
                             Iterable<ContentItemDto> providedContentItems = provider.getContent(subscription.getContentProviderParameters());
                             contentService.updateContentForSubscription(subscription, providedContentItems);
                         } catch (Exception ex) {
-                            logger.error("GKA__scheduled task is failed", ex);
+                            logger.error("Scheduled task is failed", ex);
                         }
-                        logger.info("GKA__scheduled task is done");
+                        logger.info("Scheduled task is done");
                     },
                     new Date(),
                     subscription.getReindexDelayInMillis()

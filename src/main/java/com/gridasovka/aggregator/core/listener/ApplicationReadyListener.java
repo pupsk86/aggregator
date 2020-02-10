@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
 
-    Logger logger = LoggerFactory.getLogger(ApplicationReadyListener.class);
-
     @Autowired
     private SubscriptionService subscriptionService;
 

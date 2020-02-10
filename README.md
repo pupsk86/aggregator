@@ -37,7 +37,7 @@ Parameters depends on concrete provider realisation.
 #### Built-in providers
 There are some quite useful built-in providers in the application. 
 
-##### RSS reader
+##### _RSS reader_
 It uses <a href="https://rometools.github.io/rome/">ROME Java framework for RSS and Atom feeds</a> under the hood.
 ###### Parameters:
 * Url - RSS Feed URL
@@ -47,7 +47,7 @@ habr.com
 - Url: "https://habr.com/ru/rss/all/all/?fl=en"
 ````
 
-##### Universal html parser
+##### _Universal html parser_
 It uses <a href="https://jsoup.org/">jsoup Java library</a> for parsing html.
 So you can use a <a href="https://www.w3.org/TR/2009/PR-css3-selectors-20091215/">CSS</a>
 or <a href="https://jquery.com">jQuery</a> like selector syntax to find matching elements.

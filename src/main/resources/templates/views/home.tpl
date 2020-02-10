@@ -28,11 +28,14 @@ layout 'layout.tpl',
             ul(class: 'pagination justify-content-center') {
                 def currPageNumber = contentItemsPage.number
                 def prevPageNumber = currPageNumber - 1
+                def lastPageNumber = Math.max(contentItemsPage.totalPages - 1, 0)
+                def fromPageNumber = Math.max(currPageNumber - 5 + Math.min(lastPageNumber - currPageNumber - 5, 0), 0)
+                def toPageNumber = Math.min(currPageNumber + (10 - (currPageNumber - fromPageNumber)), lastPageNumber)
 
                 li(class: 'page-item' + (contentItemsPage.hasPrevious() ? '' : ' disabled')) {
                     a(class: 'page-link', href: (prevPageNumber > 0 ? "/?page=$prevPageNumber" : '/'), 'Previous')
                 }
-                (0..Math.max(contentItemsPage.totalPages - 1, 0)).each { n ->
+                (fromPageNumber..toPageNumber).each { n ->
                     li(class: 'page-item' + (n == currPageNumber ? ' active' : '')) {
                         a(class: 'page-link', href: (n > 0 ? "/?page=$n" : '/'), n)
                     }
