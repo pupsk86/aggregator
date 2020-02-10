@@ -68,7 +68,7 @@ stackoverflow.com
 
 e1.ru
 - Url: "https://www.e1.ru/news/"
-- Article selector: "article.K7atv"
+- Article selector: ".central-column-container article"
 - Link selector: "a"
 - Title selector: "h2 a"
 - Description selector: "p a"

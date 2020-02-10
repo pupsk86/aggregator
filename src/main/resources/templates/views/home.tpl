@@ -3,7 +3,7 @@ layout 'layout.tpl',
     section: 'Home',
     pageContent: contents {
         hr()
-        form(method: 'POST', action: spring.requestUri) {
+        form(method: 'GET', action: spring.requestUri) {
             div(class: 'input-group mb-3') {
                 input(type: 'text', class: 'form-control', name: 'query', value: query)
                 div(class: 'input-group-append') {
@@ -26,22 +26,23 @@ layout 'layout.tpl',
         hr()
         nav{
             ul(class: 'pagination justify-content-center') {
+                def uriBuilder = org.springframework.web.servlet.support.ServletUriComponentsBuilder
                 def currPageNumber = contentItemsPage.number
-                def prevPageNumber = currPageNumber - 1
+                def prevPageNumber = Math.max(currPageNumber - 1, 0)
                 def lastPageNumber = Math.max(contentItemsPage.totalPages - 1, 0)
                 def fromPageNumber = Math.max(currPageNumber - 5 + Math.min(lastPageNumber - currPageNumber - 5, 0), 0)
                 def toPageNumber = Math.min(currPageNumber + (10 - (currPageNumber - fromPageNumber)), lastPageNumber)
 
                 li(class: 'page-item' + (contentItemsPage.hasPrevious() ? '' : ' disabled')) {
-                    a(class: 'page-link', href: (prevPageNumber > 0 ? "/?page=$prevPageNumber" : '/'), 'Previous')
+                    a(class: 'page-link', href: uriBuilder.fromCurrentRequest().replaceQueryParam("page", prevPageNumber).build(), 'Previous')
                 }
                 (fromPageNumber..toPageNumber).each { n ->
                     li(class: 'page-item' + (n == currPageNumber ? ' active' : '')) {
-                        a(class: 'page-link', href: (n > 0 ? "/?page=$n" : '/'), n)
+                        a(class: 'page-link', href: uriBuilder.fromCurrentRequest().replaceQueryParam("page", n).build(), n)
                     }
                 }
                 li(class: 'page-item' + (contentItemsPage.hasNext() ? '' : ' disabled')) {
-                    a(class: 'page-link', href: "/?page=${currPageNumber + 1}", 'Next')
+                    a(class: 'page-link', href: uriBuilder.fromCurrentRequest().replaceQueryParam("page", currPageNumber + 1).build(), 'Next')
                 }
             }
         }
